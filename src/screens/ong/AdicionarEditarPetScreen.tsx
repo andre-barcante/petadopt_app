@@ -37,7 +37,8 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
       const pet = pets.find(p => p.id === petId);
       if (pet) setForm({ nome: pet.nome, dataNascimento: pet.dataNascimento, raca: pet.raca, especie: pet.especie, cor: pet.cor, descricao: pet.descricao, disponivel: pet.disponivel });
     }
-  }, [petId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [petId]); // intencionalmente omite `pets` — carrega só no mount para não resetar o formulário durante edição
 
   const set = (campo: string) => (valor: string) => setForm(prev => ({ ...prev, [campo]: valor }));
 
