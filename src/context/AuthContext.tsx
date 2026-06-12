@@ -115,9 +115,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (insertError) {
       await supabase.auth.signOut();
-      const msg = insertError.message.includes('unique')
-        ? 'E-mail ou CNPJ já cadastrado.'
-        : insertError.message;
+      const raw = insertError.message ?? insertError.details ?? JSON.stringify(insertError);
+      const msg = raw.includes('unique') ? 'E-mail ou CNPJ já cadastrado.' : raw;
       return { sucesso: false, erro: msg };
     }
 
@@ -150,9 +149,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (insertError) {
       await supabase.auth.signOut();
-      const msg = insertError.message.includes('unique')
-        ? 'E-mail já cadastrado.'
-        : insertError.message;
+      const raw = insertError.message ?? insertError.details ?? JSON.stringify(insertError);
+      const msg = raw.includes('unique') ? 'E-mail já cadastrado.' : raw;
       return { sucesso: false, erro: msg };
     }
 
