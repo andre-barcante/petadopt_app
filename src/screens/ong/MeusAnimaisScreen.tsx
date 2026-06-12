@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ONGPetsStackParamList } from '../../navigation/types';
 import { COLORS } from '../../constants/colors';
@@ -13,8 +13,11 @@ type Props = { navigation: NativeStackNavigationProp<ONGPetsStackParamList, 'Meu
 function PetCard({ pet, onPress }: { pet: Pet; onPress: () => void }) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      <View style={[styles.cardEmoji, { backgroundColor: pet.especie === 'cao' ? '#FFF3E0' : '#E8F5E9' }]}>
-        <Text style={styles.emoji}>{especieEmoji(pet.especie)}</Text>
+      <View style={[styles.cardThumb, { backgroundColor: pet.especie === 'cao' ? '#FFF3E0' : '#E8F5E9' }]}>
+        {pet.fotoUrl
+          ? <Image source={{ uri: pet.fotoUrl }} style={styles.cardThumbPhoto} />
+          : <Text style={styles.emoji}>{especieEmoji(pet.especie)}</Text>
+        }
       </View>
       <View style={styles.cardInfo}>
         <Text style={styles.cardNome}>{pet.nome}</Text>
@@ -83,7 +86,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 4,
   },
-  cardEmoji: { width: 54, height: 54, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 14 },
+  cardThumb: { width: 54, height: 54, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 14, overflow: 'hidden' },
+  cardThumbPhoto: { width: 54, height: 54, resizeMode: 'cover' },
   emoji: { fontSize: 28 },
   cardInfo: { flex: 1 },
   cardNome: { fontSize: 16, fontWeight: '700', color: COLORS.textDark },

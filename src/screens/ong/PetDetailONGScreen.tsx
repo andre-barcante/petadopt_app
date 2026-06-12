@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { ONGPetsStackParamList } from '../../navigation/types';
@@ -34,13 +34,18 @@ export default function PetDetailONGScreen({ navigation, route }: Props) {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={[styles.hero, { backgroundColor: pet.especie === 'cao' ? '#FFF3E0' : '#E8F5E9' }]}>
-          <Text style={styles.heroEmoji}>{especieEmoji(pet.especie)}</Text>
-          <Text style={styles.heroNome}>{pet.nome}</Text>
-          <View style={[styles.badge, { backgroundColor: pet.disponivel ? COLORS.successLight : COLORS.errorLight }]}>
-            <Text style={[styles.badgeText, { color: pet.disponivel ? COLORS.success : COLORS.error }]}>
-              {pet.disponivel ? '✓ Disponível para adoção' : '✗ Já adotado'}
-            </Text>
+        <View style={{ backgroundColor: pet.especie === 'cao' ? '#FFF3E0' : '#E8F5E9' }}>
+          {pet.fotoUrl
+            ? <Image source={{ uri: pet.fotoUrl }} style={styles.heroPhoto} />
+            : <View style={styles.heroEmojiWrap}><Text style={styles.heroEmoji}>{especieEmoji(pet.especie)}</Text></View>
+          }
+          <View style={styles.heroInfo}>
+            <Text style={styles.heroNome}>{pet.nome}</Text>
+            <View style={[styles.badge, { backgroundColor: pet.disponivel ? COLORS.successLight : COLORS.errorLight }]}>
+              <Text style={[styles.badgeText, { color: pet.disponivel ? COLORS.success : COLORS.error }]}>
+                {pet.disponivel ? '✓ Disponível para adoção' : '✗ Já adotado'}
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -72,8 +77,10 @@ export default function PetDetailONGScreen({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.background },
   container: { flexGrow: 1, paddingBottom: 32 },
-  hero: { alignItems: 'center', paddingVertical: 32, paddingHorizontal: 24 },
-  heroEmoji: { fontSize: 80, marginBottom: 12 },
+  heroPhoto: { alignSelf: 'stretch', aspectRatio: 1.5, resizeMode: 'cover' },
+  heroEmojiWrap: { alignItems: 'center', paddingTop: 32, paddingBottom: 8 },
+  heroEmoji: { fontSize: 80 },
+  heroInfo: { alignItems: 'center', paddingTop: 12, paddingBottom: 24, paddingHorizontal: 24 },
   heroNome: { fontSize: 28, fontWeight: '800', color: COLORS.textDark, marginBottom: 12 },
   badge: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20 },
   badgeText: { fontSize: 14, fontWeight: '600' },
