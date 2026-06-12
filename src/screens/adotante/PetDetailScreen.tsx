@@ -42,13 +42,15 @@ export default function PetDetailScreen({ navigation, route }: Props) {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={[styles.hero, { backgroundColor: bgColor }]}>
+        <View style={{ backgroundColor: bgColor }}>
           {pet.fotoUrl
             ? <Image source={{ uri: pet.fotoUrl }} style={styles.heroPhoto} />
-            : <Text style={styles.heroEmoji}>{especieEmoji(pet.especie)}</Text>
+            : <View style={styles.heroEmojiWrap}><Text style={styles.heroEmoji}>{especieEmoji(pet.especie)}</Text></View>
           }
-          <Text style={styles.heroNome}>{pet.nome}</Text>
-          <Text style={styles.heroRaca}>{pet.raca} · {formatarEspecie(pet.especie)}</Text>
+          <View style={styles.heroInfo}>
+            <Text style={styles.heroNome}>{pet.nome}</Text>
+            <Text style={styles.heroRaca}>{pet.raca} · {formatarEspecie(pet.especie)}</Text>
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -95,9 +97,10 @@ export default function PetDetailScreen({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.background },
   container: { flexGrow: 1, paddingBottom: 32 },
-  hero: { alignItems: 'center', paddingVertical: 32 },
-  heroPhoto: { width: '100%', aspectRatio: 1, resizeMode: 'cover', marginBottom: 16 },
-  heroEmoji: { fontSize: 80, marginBottom: 12 },
+  heroPhoto: { alignSelf: 'stretch', aspectRatio: 1.5, resizeMode: 'cover' },
+  heroEmojiWrap: { alignItems: 'center', paddingTop: 32, paddingBottom: 8 },
+  heroEmoji: { fontSize: 80 },
+  heroInfo: { alignItems: 'center', paddingTop: 12, paddingBottom: 28 },
   heroNome: { fontSize: 28, fontWeight: '800', color: COLORS.textDark },
   heroRaca: { fontSize: 15, color: COLORS.textMedium, marginTop: 4 },
   section: { backgroundColor: COLORS.white, marginHorizontal: 16, marginTop: 12, borderRadius: 14, padding: 20, elevation: 1, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
