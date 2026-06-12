@@ -6,7 +6,7 @@ interface DataContextData {
   pets: Pet[];
   propostas: Proposta[];
   carregando: boolean;
-  adicionarPet: (pet: Omit<Pet, 'id' | 'fotoUrl'>) => Promise<Pet | null>;
+  adicionarPet: (pet: Omit<Pet, 'id'>) => Promise<Pet | null>;
   atualizarPet: (pet: Pet) => Promise<void>;
   adicionarProposta: (proposta: Omit<Proposta, 'id' | 'notasPrivadas' | 'criadaEm'>) => Promise<{ sucesso: boolean; erro?: string }>;
   adicionarNota: (propostaId: string, texto: string) => Promise<void>;
@@ -64,7 +64,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     carregar().finally(() => setCarregando(false));
   }, []);
 
-  const adicionarPet = async (dados: Omit<Pet, 'id' | 'fotoUrl'>): Promise<Pet | null> => {
+  const adicionarPet = async (dados: Omit<Pet, 'id'>): Promise<Pet | null> => {
     const { data, error } = await supabase
       .from('pets')
       .insert({
@@ -76,6 +76,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         cor: dados.cor,
         descricao: dados.descricao,
         disponivel: dados.disponivel,
+        foto_url: dados.fotoUrl ?? null,
       })
       .select()
       .single();
@@ -94,6 +95,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       cor: pet.cor,
       descricao: pet.descricao,
       disponivel: pet.disponivel,
+      foto_url: pet.fotoUrl ?? null,
     }).eq('id', pet.id);
     setPets((prev: Pet[]) => prev.map((p: Pet) => p.id === pet.id ? pet : p));
   };

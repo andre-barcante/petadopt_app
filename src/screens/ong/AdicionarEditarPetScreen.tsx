@@ -7,6 +7,7 @@ import { COLORS } from '../../constants/colors';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { DateInput } from '../../components/ui/DateInput';
+import { PhotoPicker } from '../../components/ui/PhotoPicker';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { Especie } from '../../types';
@@ -16,7 +17,7 @@ type Props = {
   route: RouteProp<ONGPetsStackParamList, 'AdicionarEditarPet'>;
 };
 
-type FormPet = { nome: string; dataNascimento: string; raca: string; especie: Especie; cor: string; descricao: string; disponivel: boolean };
+type FormPet = { nome: string; dataNascimento: string; raca: string; especie: Especie; cor: string; descricao: string; disponivel: boolean; fotoUrl?: string };
 
 const ESPECIES: { valor: Especie; label: string; emoji: string }[] = [
   { valor: 'cao', label: 'Cão', emoji: '🐕' },
@@ -38,7 +39,7 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
   useEffect(() => {
     if (petId) {
       const pet = pets.find((p: any) => p.id === petId);
-      if (pet) setForm({ nome: pet.nome, dataNascimento: pet.dataNascimento, raca: pet.raca, especie: pet.especie, cor: pet.cor, descricao: pet.descricao, disponivel: pet.disponivel });
+      if (pet) setForm({ nome: pet.nome, dataNascimento: pet.dataNascimento, raca: pet.raca, especie: pet.especie, cor: pet.cor, descricao: pet.descricao, disponivel: pet.disponivel, fotoUrl: pet.fotoUrl });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [petId]);
@@ -61,7 +62,7 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
     if (!validar()) return;
     setLoading(true);
     if (petId) {
-      const pet = pets.find(p => p.id === petId)!;
+      const pet = pets.find((p: any) => p.id === petId)!;
       await atualizarPet({ ...pet, ...form });
       setLoading(false);
       Alert.alert('Sucesso', 'Pet atualizado!', [{ text: 'OK', onPress: () => navigation.goBack() }]);
@@ -106,6 +107,12 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
             numberOfLines={4}
             style={{ height: 100, textAlignVertical: 'top' } as any}
             error={erros.descricao}
+          />
+
+          <Text style={styles.fieldLabel}>Foto</Text>
+          <PhotoPicker
+            value={form.fotoUrl}
+            onChange={(uri) => setForm((prev: FormPet) => ({ ...prev, fotoUrl: uri }))}
           />
 
           {petId && (

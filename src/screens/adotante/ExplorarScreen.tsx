@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AdotanteExplorarStackParamList } from '../../navigation/types';
 import { COLORS } from '../../constants/colors';
@@ -21,7 +21,10 @@ function PetCard({ pet, ongNome, onPress }: { pet: Pet; ongNome: string; onPress
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
       <View style={[styles.cardTop, { backgroundColor: bgColor }]}>
-        <Text style={styles.cardEmoji}>{especieEmoji(pet.especie)}</Text>
+        {pet.fotoUrl
+          ? <Image source={{ uri: pet.fotoUrl }} style={styles.cardPhoto} />
+          : <Text style={styles.cardEmoji}>{especieEmoji(pet.especie)}</Text>
+        }
       </View>
       <View style={styles.cardBody}>
         <Text style={styles.cardNome}>{pet.nome}</Text>
@@ -105,6 +108,7 @@ const styles = StyleSheet.create({
   row: { justifyContent: 'space-between' },
   card: { backgroundColor: COLORS.white, borderRadius: 16, marginBottom: 14, width: '48%', overflow: 'hidden', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 4 },
   cardTop: { alignItems: 'center', paddingVertical: 20 },
+  cardPhoto: { width: '100%', aspectRatio: 1, resizeMode: 'cover' },
   cardEmoji: { fontSize: 44 },
   cardBody: { padding: 12 },
   cardNome: { fontSize: 16, fontWeight: '700', color: COLORS.textDark },

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { AdotanteExplorarStackParamList } from '../../navigation/types';
@@ -43,7 +43,10 @@ export default function PetDetailScreen({ navigation, route }: Props) {
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={[styles.hero, { backgroundColor: bgColor }]}>
-          <Text style={styles.heroEmoji}>{especieEmoji(pet.especie)}</Text>
+          {pet.fotoUrl
+            ? <Image source={{ uri: pet.fotoUrl }} style={styles.heroPhoto} />
+            : <Text style={styles.heroEmoji}>{especieEmoji(pet.especie)}</Text>
+          }
           <Text style={styles.heroNome}>{pet.nome}</Text>
           <Text style={styles.heroRaca}>{pet.raca} · {formatarEspecie(pet.especie)}</Text>
         </View>
@@ -93,6 +96,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.background },
   container: { flexGrow: 1, paddingBottom: 32 },
   hero: { alignItems: 'center', paddingVertical: 32 },
+  heroPhoto: { width: '100%', aspectRatio: 1, resizeMode: 'cover', marginBottom: 16 },
   heroEmoji: { fontSize: 80, marginBottom: 12 },
   heroNome: { fontSize: 28, fontWeight: '800', color: COLORS.textDark },
   heroRaca: { fontSize: 15, color: COLORS.textMedium, marginTop: 4 },
