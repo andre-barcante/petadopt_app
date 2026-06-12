@@ -49,10 +49,15 @@ export default function RegisterAdotanteScreen({ navigation }: Props) {
   const handleCadastrar = async () => {
     if (!validar()) return;
     setLoading(true);
-    const { confirmarSenha, ...dados } = form;
-    const resultado = await cadastrarAdotante(dados);
-    setLoading(false);
-    if (!resultado.sucesso) Alert.alert('Erro', resultado.erro);
+    try {
+      const { confirmarSenha, ...dados } = form;
+      const resultado = await cadastrarAdotante(dados);
+      if (!resultado.sucesso) Alert.alert('Erro', resultado.erro ?? 'Erro desconhecido.');
+    } catch (e: any) {
+      Alert.alert('Erro de conexão', e?.message ?? 'Não foi possível conectar ao servidor.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
