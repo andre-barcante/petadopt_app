@@ -115,11 +115,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (insertError) {
       await supabase.auth.signOut();
-      const raw = insertError.message ?? insertError.details ?? JSON.stringify(insertError);
+      console.error('ONG insert error:', insertError);
+      const raw = insertError.message ?? insertError.details ?? insertError.hint ?? String(insertError);
       const msg = raw.includes('unique') ? 'E-mail ou CNPJ já cadastrado.' : raw;
       return { sucesso: false, erro: msg };
     }
 
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) await aplicarSessao(session);
     return { sucesso: true };
   };
 
@@ -154,6 +157,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return { sucesso: false, erro: msg };
     }
 
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) await aplicarSessao(session);
     return { sucesso: true };
   };
 

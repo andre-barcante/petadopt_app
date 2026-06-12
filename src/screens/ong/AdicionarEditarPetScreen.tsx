@@ -6,6 +6,7 @@ import { ONGPetsStackParamList } from '../../navigation/types';
 import { COLORS } from '../../constants/colors';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import { DateInput } from '../../components/ui/DateInput';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
 import { Especie } from '../../types';
@@ -48,7 +49,7 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
   const validar = () => {
     const e: Record<string, string> = {};
     if (!form.nome.trim()) e.nome = 'Nome obrigatório.';
-    if (!form.dataNascimento.match(/^\d{4}-\d{2}-\d{2}$/)) e.dataNascimento = 'Use o formato AAAA-MM-DD.';
+    if (!form.dataNascimento.match(/^\d{4}-\d{2}-\d{2}$/)) e.dataNascimento = 'Preencha a data completa.';
     if (!form.raca.trim()) e.raca = 'Raça obrigatória.';
     if (!form.cor.trim()) e.cor = 'Cor obrigatória.';
     if (!form.descricao.trim()) e.descricao = 'Descrição obrigatória.';
@@ -78,7 +79,7 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
 
         <View style={styles.form}>
           <Input label="Nome" value={form.nome} onChangeText={set('nome')} placeholder="Nome do animal" error={erros.nome} />
-          <Input label="Data de Nascimento" value={form.dataNascimento} onChangeText={set('dataNascimento')} placeholder="AAAA-MM-DD" keyboardType="numeric" error={erros.dataNascimento} />
+          <DateInput label="Data de Nascimento" value={form.dataNascimento} onChangeDate={set('dataNascimento')} error={erros.dataNascimento} />
 
           <Text style={styles.fieldLabel}>Espécie</Text>
           <View style={styles.especieRow}>

@@ -5,6 +5,7 @@ import { AuthStackParamList } from '../../navigation/types';
 import { COLORS } from '../../constants/colors';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
+import { DateInput } from '../../components/ui/DateInput';
 import { useAuth } from '../../context/AuthContext';
 import { Sexo } from '../../types';
 
@@ -36,7 +37,7 @@ export default function RegisterAdotanteScreen({ navigation }: Props) {
   const validar = () => {
     const e: Record<string, string> = {};
     if (!form.nome.trim()) e.nome = 'Nome obrigatório.';
-    if (!form.dataNascimento.match(/^\d{4}-\d{2}-\d{2}$/)) e.dataNascimento = 'Use o formato AAAA-MM-DD.';
+    if (!form.dataNascimento.match(/^\d{4}-\d{2}-\d{2}$/)) e.dataNascimento = 'Preencha a data completa.';
     if (!form.email.trim() || !form.email.includes('@')) e.email = 'E-mail inválido.';
     if (!form.contato.trim()) e.contato = 'Contato obrigatório.';
     if (!form.endereco.trim()) e.endereco = 'Endereço obrigatório.';
@@ -84,7 +85,7 @@ export default function RegisterAdotanteScreen({ navigation }: Props) {
             ))}
           </View>
 
-          <Input label="Data de Nascimento" value={form.dataNascimento} onChangeText={set('dataNascimento')} placeholder="AAAA-MM-DD" keyboardType="numeric" error={erros.dataNascimento} />
+          <DateInput label="Data de Nascimento" value={form.dataNascimento} onChangeDate={set('dataNascimento')} error={erros.dataNascimento} />
           <Input label="E-mail" value={form.email} onChangeText={set('email')} placeholder="seu@email.com" keyboardType="email-address" autoCapitalize="none" error={erros.email} />
           <Input label="Contato (WhatsApp/Telefone)" value={form.contato} onChangeText={set('contato')} placeholder="(00) 00000-0000" keyboardType="phone-pad" error={erros.contato} />
           <Input label="Endereço" value={form.endereco} onChangeText={set('endereco')} placeholder="Rua, número - Cidade, UF" error={erros.endereco} />
