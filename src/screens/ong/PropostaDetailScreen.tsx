@@ -26,9 +26,9 @@ export default function PropostaDetailScreen({ navigation, route }: Props) {
   const { pets, propostas, adicionarNota, atualizarStatus } = useData();
   const [novaNota, setNovaNota] = useState('');
 
-  const proposta = propostas.find(p => p.id === propostaId);
-  const pet = pets.find(p => p.id === proposta?.petId);
-  const adotante = adotantes.find(a => a.id === proposta?.adotanteId);
+  const proposta = propostas.find((p: any) => p.id === propostaId);
+  const pet = pets.find((p: any) => p.id === proposta?.petId);
+  const adotante = adotantes.find((a: any) => a.id === proposta?.adotanteId);
 
   if (!proposta || !pet || !adotante) {
     return <View style={styles.notFound}><Text>Proposta não encontrada.</Text></View>;
@@ -52,8 +52,8 @@ export default function PropostaDetailScreen({ navigation, route }: Props) {
         {
           text: decisao === 'aceita' ? 'Aceitar' : 'Recusar',
           style: decisao === 'aceita' ? 'default' : 'destructive',
-          onPress: () => {
-            atualizarStatus(proposta.id, decisao);
+          onPress: async () => {
+            await atualizarStatus(proposta.id, decisao);
             navigation.goBack();
           },
         },
@@ -64,14 +64,12 @@ export default function PropostaDetailScreen({ navigation, route }: Props) {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
-        {/* Status */}
         <View style={[styles.statusBanner, { backgroundColor: corStatus.bg }]}>
           <Text style={[styles.statusText, { color: corStatus.text }]}>
             Status: {labelStatus(proposta.status)}
           </Text>
         </View>
 
-        {/* Pet */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Pet</Text>
           <View style={styles.petRow}>
@@ -83,7 +81,6 @@ export default function PropostaDetailScreen({ navigation, route }: Props) {
           </View>
         </View>
 
-        {/* Adotante */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Candidato</Text>
           <Text style={styles.adotanteNome}>{adotante.nome}</Text>
@@ -93,16 +90,14 @@ export default function PropostaDetailScreen({ navigation, route }: Props) {
           <Text style={styles.adotanteInfo}>🎂 {formatDate(adotante.dataNascimento)}</Text>
         </View>
 
-        {/* Mensagem do adotante */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Mensagem do Candidato</Text>
           <Text style={styles.mensagem}>{proposta.descricaoAdotante}</Text>
         </View>
 
-        {/* Notas privadas */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Notas Privadas ({proposta.notasPrivadas.length})</Text>
-          {proposta.notasPrivadas.map(nota => (
+          {proposta.notasPrivadas.map((nota: any) => (
             <View key={nota.id} style={styles.nota}>
               <Text style={styles.notaTexto}>{nota.texto}</Text>
               <Text style={styles.notaData}>{new Date(nota.criadaEm).toLocaleDateString('pt-BR')}</Text>
@@ -126,7 +121,6 @@ export default function PropostaDetailScreen({ navigation, route }: Props) {
           )}
         </View>
 
-        {/* Ações */}
         {proposta.status === 'pendente' && (
           <View style={styles.acoes}>
             <Button

@@ -11,13 +11,14 @@ type Props = { navigation: NativeStackNavigationProp<AuthStackParamList, 'Regist
 
 export default function RegisterONGScreen({ navigation }: Props) {
   const { cadastrarONG } = useAuth();
-  const [form, setForm] = useState({
+  type FormONG = { nome: string; cnpj: string; email: string; endereco: string; contato: string; senha: string; confirmarSenha: string };
+  const [form, setForm] = useState<FormONG>({
     nome: '', cnpj: '', email: '', endereco: '', contato: '', senha: '', confirmarSenha: '',
   });
   const [erros, setErros] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
-  const set = (campo: string) => (valor: string) => setForm(prev => ({ ...prev, [campo]: valor }));
+  const set = (campo: string) => (valor: string) => setForm((prev: FormONG) => ({ ...prev, [campo]: valor }));
 
   const validar = () => {
     const e: Record<string, string> = {};
@@ -32,15 +33,13 @@ export default function RegisterONGScreen({ navigation }: Props) {
     return Object.keys(e).length === 0;
   };
 
-  const handleCadastrar = () => {
+  const handleCadastrar = async () => {
     if (!validar()) return;
     setLoading(true);
-    setTimeout(() => {
-      const { confirmarSenha, ...dados } = form;
-      const resultado = cadastrarONG(dados);
-      setLoading(false);
-      if (!resultado.sucesso) Alert.alert('Erro', resultado.erro);
-    }, 400);
+    const { confirmarSenha, ...dados } = form;
+    const resultado = await cadastrarONG(dados);
+    setLoading(false);
+    if (!resultado.sucesso) Alert.alert('Erro', resultado.erro);
   };
 
   return (

@@ -15,6 +15,8 @@ type Props = {
   route: RouteProp<ONGPetsStackParamList, 'AdicionarEditarPet'>;
 };
 
+type FormPet = { nome: string; dataNascimento: string; raca: string; especie: Especie; cor: string; descricao: string; disponivel: boolean };
+
 const ESPECIES: { valor: Especie; label: string; emoji: string }[] = [
   { valor: 'cao', label: 'Cão', emoji: '🐕' },
   { valor: 'gato', label: 'Gato', emoji: '🐈' },
@@ -25,8 +27,8 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
   const { usuario } = useAuth();
   const { pets, adicionarPet, atualizarPet } = useData();
 
-  const [form, setForm] = useState({
-    nome: '', dataNascimento: '', raca: '', especie: 'cao' as Especie,
+  const [form, setForm] = useState<FormPet>({
+    nome: '', dataNascimento: '', raca: '', especie: 'cao',
     cor: '', descricao: '', disponivel: true,
   });
   const [erros, setErros] = useState<Record<string, string>>({});
@@ -34,13 +36,14 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
 
   useEffect(() => {
     if (petId) {
-      const pet = pets.find(p => p.id === petId);
+      const pet = pets.find((p: any) => p.id === petId);
       if (pet) setForm({ nome: pet.nome, dataNascimento: pet.dataNascimento, raca: pet.raca, especie: pet.especie, cor: pet.cor, descricao: pet.descricao, disponivel: pet.disponivel });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [petId]); // intencionalmente omite `pets` — carrega só no mount para não resetar o formulário durante edição
+  }, [petId]);
 
-  const set = (campo: string) => (valor: string) => setForm(prev => ({ ...prev, [campo]: valor }));
+  const set = (campo: string) => (valor: string) =>
+    setForm((prev: FormPet) => ({ ...prev, [campo]: valor }));
 
   const validar = () => {
     const e: Record<string, string> = {};
@@ -53,20 +56,19 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
     return Object.keys(e).length === 0;
   };
 
-  const handleSalvar = () => {
+  const handleSalvar = async () => {
     if (!validar()) return;
     setLoading(true);
-    setTimeout(() => {
-      if (petId) {
-        const pet = pets.find(p => p.id === petId)!;
-        atualizarPet({ ...pet, ...form });
-        Alert.alert('Sucesso', 'Pet atualizado!', [{ text: 'OK', onPress: () => navigation.goBack() }]);
-      } else {
-        adicionarPet({ ...form, ongId: usuario!.id });
-        Alert.alert('Sucesso', 'Pet cadastrado!', [{ text: 'OK', onPress: () => navigation.goBack() }]);
-      }
+    if (petId) {
+      const pet = pets.find(p => p.id === petId)!;
+      await atualizarPet({ ...pet, ...form });
       setLoading(false);
-    }, 400);
+      Alert.alert('Sucesso', 'Pet atualizado!', [{ text: 'OK', onPress: () => navigation.goBack() }]);
+    } else {
+      await adicionarPet({ ...form, ongId: usuario!.id });
+      setLoading(false);
+      Alert.alert('Sucesso', 'Pet cadastrado!', [{ text: 'OK', onPress: () => navigation.goBack() }]);
+    }
   };
 
   return (
@@ -84,7 +86,7 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
               <TouchableOpacity
                 key={e.valor}
                 style={[styles.especieBtn, form.especie === e.valor && styles.especieBtnAtivo]}
-                onPress={() => setForm(prev => ({ ...prev, especie: e.valor }))}
+                onPress={() => setForm((prev: FormPet) => ({ ...prev, especie: e.valor }))}
               >
                 <Text style={styles.especieEmoji}>{e.emoji}</Text>
                 <Text style={[styles.especieBtnText, form.especie === e.valor && styles.especieBtnTextAtivo]}>{e.label}</Text>
@@ -113,7 +115,7 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
                   <TouchableOpacity
                     key={String(op.valor)}
                     style={[styles.especieBtn, form.disponivel === op.valor && { ...styles.especieBtnAtivo, backgroundColor: op.color + '22', borderColor: op.color }]}
-                    onPress={() => setForm(prev => ({ ...prev, disponivel: op.valor }))}
+                    onPress={() => setForm((prev: FormPet) => ({ ...prev, disponivel: op.valor }))}
                   >
                     <Text style={[styles.especieBtnText, form.disponivel === op.valor && { color: op.color, fontWeight: '700' }]}>{op.label}</Text>
                   </TouchableOpacity>

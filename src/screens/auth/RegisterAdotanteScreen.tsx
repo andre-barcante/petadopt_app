@@ -10,6 +10,11 @@ import { Sexo } from '../../types';
 
 type Props = { navigation: NativeStackNavigationProp<AuthStackParamList, 'RegisterAdotante'> };
 
+type FormAdotante = {
+  nome: string; sexo: Sexo; dataNascimento: string; email: string;
+  contato: string; endereco: string; senha: string; confirmarSenha: string;
+};
+
 const SEXOS: { valor: Sexo; label: string }[] = [
   { valor: 'M', label: 'Masculino' },
   { valor: 'F', label: 'Feminino' },
@@ -18,14 +23,15 @@ const SEXOS: { valor: Sexo; label: string }[] = [
 
 export default function RegisterAdotanteScreen({ navigation }: Props) {
   const { cadastrarAdotante } = useAuth();
-  const [form, setForm] = useState({
-    nome: '', sexo: 'M' as Sexo, dataNascimento: '', email: '',
+  const [form, setForm] = useState<FormAdotante>({
+    nome: '', sexo: 'M', dataNascimento: '', email: '',
     contato: '', endereco: '', senha: '', confirmarSenha: '',
   });
   const [erros, setErros] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
-  const set = (campo: string) => (valor: string) => setForm(prev => ({ ...prev, [campo]: valor }));
+  const set = (campo: string) => (valor: string) =>
+    setForm((prev: FormAdotante) => ({ ...prev, [campo]: valor }));
 
   const validar = () => {
     const e: Record<string, string> = {};
@@ -40,15 +46,13 @@ export default function RegisterAdotanteScreen({ navigation }: Props) {
     return Object.keys(e).length === 0;
   };
 
-  const handleCadastrar = () => {
+  const handleCadastrar = async () => {
     if (!validar()) return;
     setLoading(true);
-    setTimeout(() => {
-      const { confirmarSenha, ...dados } = form;
-      const resultado = cadastrarAdotante(dados);
-      setLoading(false);
-      if (!resultado.sucesso) Alert.alert('Erro', resultado.erro);
-    }, 400);
+    const { confirmarSenha, ...dados } = form;
+    const resultado = await cadastrarAdotante(dados);
+    setLoading(false);
+    if (!resultado.sucesso) Alert.alert('Erro', resultado.erro);
   };
 
   return (
@@ -66,7 +70,7 @@ export default function RegisterAdotanteScreen({ navigation }: Props) {
               <TouchableOpacity
                 key={s.valor}
                 style={[styles.sexoBtn, form.sexo === s.valor && styles.sexoBtnAtivo]}
-                onPress={() => setForm(prev => ({ ...prev, sexo: s.valor }))}
+                onPress={() => setForm((prev: FormAdotante) => ({ ...prev, sexo: s.valor }))}
               >
                 <Text style={[styles.sexoBtnText, form.sexo === s.valor && styles.sexoBtnTextAtivo]}>
                   {s.label}

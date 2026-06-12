@@ -23,42 +23,39 @@ export default function CandidaturaScreen({ navigation, route }: Props) {
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const pet = pets.find(p => p.id === petId);
+  const pet = pets.find((p: any) => p.id === petId);
 
   if (!pet || !usuario) return <View style={styles.notFound}><Text>Pet não encontrado.</Text></View>;
 
-  const handleEnviar = () => {
+  const handleEnviar = async () => {
     if (descricao.trim().length < 20) {
       setErro('Por favor, escreva ao menos 20 caracteres se apresentando e explicando por que quer adotar.');
       return;
     }
     setErro('');
     setLoading(true);
-    setTimeout(() => {
-      const resultado = adicionarProposta({
-        petId: pet.id,
-        adotanteId: usuario.id,
-        ongId: pet.ongId,
-        descricaoAdotante: descricao.trim(),
-        status: 'pendente',
-      });
-      setLoading(false);
-      if (resultado.sucesso) {
-        Alert.alert(
-          '🎉 Candidatura enviada!',
-          `Sua candidatura para adotar ${pet.nome} foi enviada. A ONG responsável entrará em contato.`,
-          [{ text: 'OK', onPress: () => navigation.popToTop() }]
-        );
-      } else {
-        Alert.alert('Ops!', resultado.erro ?? 'Não foi possível enviar a candidatura.');
-      }
-    }, 500);
+    const resultado = await adicionarProposta({
+      petId: pet.id,
+      adotanteId: usuario.id,
+      ongId: pet.ongId,
+      descricaoAdotante: descricao.trim(),
+      status: 'pendente',
+    });
+    setLoading(false);
+    if (resultado.sucesso) {
+      Alert.alert(
+        '🎉 Candidatura enviada!',
+        `Sua candidatura para adotar ${pet.nome} foi enviada. A ONG responsável entrará em contato.`,
+        [{ text: 'OK', onPress: () => navigation.popToTop() }]
+      );
+    } else {
+      Alert.alert('Ops!', resultado.erro ?? 'Não foi possível enviar a candidatura.');
+    }
   };
 
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        {/* Pet summary */}
         <View style={[styles.petCard, { backgroundColor: pet.especie === 'cao' ? '#FFF3E0' : '#E8F5E9' }]}>
           <Text style={styles.petEmoji}>{especieEmoji(pet.especie)}</Text>
           <View>

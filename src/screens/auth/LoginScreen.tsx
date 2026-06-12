@@ -24,22 +24,16 @@ export default function LoginScreen({ navigation, route }: Props) {
   const titulo = isONG ? 'Acesso para ONGs' : 'Acesso para Adotantes';
   const registroScreen = isONG ? 'RegisterONG' : 'RegisterAdotante';
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email.trim() || !senha.trim()) {
       Alert.alert('Atenção', 'Preencha e-mail e senha.');
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      const ok = login(email.trim(), senha, tipo);
-      setLoading(false);
-      if (!ok) Alert.alert('Erro', 'E-mail ou senha incorretos.');
-    }, 400);
+    const ok = await login(email.trim(), senha, tipo);
+    setLoading(false);
+    if (!ok) Alert.alert('Erro', 'E-mail ou senha incorretos.');
   };
-
-  const dica = isONG
-    ? 'Teste: contato@patinhasfelizes.org / 123456'
-    : 'Teste: ana@email.com / 123456';
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -66,8 +60,6 @@ export default function LoginScreen({ navigation, route }: Props) {
             secureTextEntry
           />
 
-          <Text style={styles.dica}>{dica}</Text>
-
           <Button title="Entrar" onPress={handleLogin} loading={loading} style={styles.btn} />
 
           <View style={styles.registerRow}>
@@ -89,7 +81,6 @@ const styles = StyleSheet.create({
   emoji: { fontSize: 48, marginBottom: 8 },
   titulo: { fontSize: 22, fontWeight: '700', color: COLORS.textDark },
   form: { backgroundColor: COLORS.white, borderRadius: 16, padding: 24, elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8 },
-  dica: { fontSize: 12, color: COLORS.textLight, marginBottom: 16, textAlign: 'center', fontStyle: 'italic' },
   btn: { marginTop: 4 },
   registerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 20 },
   registerText: { color: COLORS.textMedium, fontSize: 14 },

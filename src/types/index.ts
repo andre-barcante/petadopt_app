@@ -10,7 +10,6 @@ export interface ONG {
   email: string;
   endereco: string;
   contato: string;
-  senha: string;
 }
 
 export interface Pet {
@@ -23,6 +22,7 @@ export interface Pet {
   cor: string;
   descricao: string;
   disponivel: boolean;
+  fotoUrl?: string;
 }
 
 export interface Adotante {
@@ -33,7 +33,6 @@ export interface Adotante {
   email: string;
   contato: string;
   endereco: string;
-  senha: string;
 }
 
 export interface NotaPrivada {
