@@ -62,6 +62,12 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     carregar().finally(() => setCarregando(false));
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') void carregar();
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const adicionarPet = async (dados: Omit<Pet, 'id'>): Promise<Pet | null> => {
