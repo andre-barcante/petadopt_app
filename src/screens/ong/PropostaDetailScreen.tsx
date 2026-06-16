@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, Alert, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, Alert, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { ONGPropostasStackParamList } from '../../navigation/types';
@@ -73,7 +73,12 @@ export default function PropostaDetailScreen({ navigation, route }: Props) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Pet</Text>
           <View style={styles.petRow}>
-            <Text style={styles.petEmoji}>{especieEmoji(pet.especie)}</Text>
+            <View style={[styles.petThumb, { backgroundColor: pet.especie === 'cao' ? '#FFF3E0' : '#E8F5E9' }]}>
+              {pet.fotoUrl
+                ? <Image source={{ uri: pet.fotoUrl }} style={styles.petThumbPhoto} />
+                : <Text style={styles.petEmoji}>{especieEmoji(pet.especie)}</Text>
+              }
+            </View>
             <View>
               <Text style={styles.petNome}>{pet.nome}</Text>
               <Text style={styles.petInfo}>{pet.raca} · {pet.cor}</Text>
@@ -150,7 +155,9 @@ const styles = StyleSheet.create({
   section: { backgroundColor: COLORS.white, marginHorizontal: 16, marginBottom: 12, borderRadius: 14, padding: 20, elevation: 1, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.06, shadowRadius: 4 },
   sectionTitle: { fontSize: 12, fontWeight: '700', color: COLORS.textLight, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 14 },
   petRow: { flexDirection: 'row', alignItems: 'center' },
-  petEmoji: { fontSize: 36, marginRight: 14 },
+  petThumb: { width: 60, height: 60, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 14, overflow: 'hidden' },
+  petThumbPhoto: { width: 60, height: 60, resizeMode: 'cover' },
+  petEmoji: { fontSize: 32 },
   petNome: { fontSize: 18, fontWeight: '700', color: COLORS.textDark },
   petInfo: { fontSize: 14, color: COLORS.textMedium, marginTop: 2 },
   adotanteNome: { fontSize: 17, fontWeight: '700', color: COLORS.textDark, marginBottom: 10 },
