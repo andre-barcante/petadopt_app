@@ -7,6 +7,12 @@ const ANON_KEY =
   'eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzgxMjg3NTY3LCJleHAiOjIwOTY2NDc1Njd9.' +
   'yykhQEuo_9idyB5OpE1BI0inM6c7RrtiO-F2tpODIAg';
 
+const fetchWithTimeout = (url: RequestInfo, options?: RequestInit): Promise<Response> => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 10000);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
+};
+
 export const supabase = createClient(SUPABASE_URL, ANON_KEY, {
   auth: {
     storage: AsyncStorage,
@@ -14,4 +20,5 @@ export const supabase = createClient(SUPABASE_URL, ANON_KEY, {
     persistSession: true,
     detectSessionInUrl: false,
   },
+  global: { fetch: fetchWithTimeout },
 });
