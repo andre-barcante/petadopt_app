@@ -41,8 +41,7 @@ export default function AdicionarEditarPetScreen({ navigation, route }: Props) {
       const pet = pets.find((p: any) => p.id === petId);
       if (pet) setForm({ nome: pet.nome, dataNascimento: pet.dataNascimento, raca: pet.raca, especie: pet.especie, cor: pet.cor, descricao: pet.descricao, disponivel: pet.disponivel, fotoUrl: pet.fotoUrl });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [petId]);
+  }, [petId, pets]);
 
   const set = (campo: string) => (valor: string) =>
     setForm((prev: FormPet) => ({ ...prev, [campo]: valor }));

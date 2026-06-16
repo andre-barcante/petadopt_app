@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, SafeAreaView, Image } from 'react-native';
 import { COLORS } from '../../constants/colors';
 import { useAuth } from '../../context/AuthContext';
 import { useData } from '../../context/DataContext';
@@ -12,14 +12,17 @@ const STATUS_STYLE: Record<StatusProposta, { bg: string; text: string; icon: str
   recusada: { bg: COLORS.errorLight, text: COLORS.error, icon: '❌' },
 };
 
-function CandidaturaCard({ proposta, petNome, petEspecie, ongNome }: {
-  proposta: Proposta; petNome: string; petEspecie: 'cao' | 'gato'; ongNome: string;
+function CandidaturaCard({ proposta, petNome, petEspecie, petFotoUrl, ongNome }: {
+  proposta: Proposta; petNome: string; petEspecie: 'cao' | 'gato'; petFotoUrl?: string; ongNome: string;
 }) {
   const cor = STATUS_STYLE[proposta.status];
   return (
     <View style={styles.card}>
-      <View style={styles.cardLeft}>
-        <Text style={styles.cardEmoji}>{especieEmoji(petEspecie)}</Text>
+      <View style={[styles.cardLeft, { backgroundColor: petEspecie === 'cao' ? '#FFF3E0' : '#E8F5E9' }]}>
+        {petFotoUrl
+          ? <Image source={{ uri: petFotoUrl }} style={styles.cardThumbPhoto} />
+          : <Text style={styles.cardEmoji}>{especieEmoji(petEspecie)}</Text>
+        }
       </View>
       <View style={styles.cardInfo}>
         <Text style={styles.cardNome}>{petNome}</Text>
@@ -56,6 +59,7 @@ export default function MinhasCandidaturasScreen() {
                 proposta={item}
                 petNome={pet?.nome ?? 'Pet removido'}
                 petEspecie={pet?.especie ?? 'cao'}
+                petFotoUrl={pet?.fotoUrl}
                 ongNome={ong?.nome ?? 'ONG desconhecida'}
               />
             );
@@ -79,8 +83,9 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   list: { padding: 16, paddingBottom: 32 },
   card: { backgroundColor: COLORS.white, borderRadius: 14, padding: 16, marginBottom: 12, flexDirection: 'row', alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 4 },
-  cardLeft: { marginRight: 14 },
-  cardEmoji: { fontSize: 32 },
+  cardLeft: { width: 50, height: 50, borderRadius: 10, alignItems: 'center', justifyContent: 'center', marginRight: 14, overflow: 'hidden' },
+  cardThumbPhoto: { width: 50, height: 50, resizeMode: 'cover' },
+  cardEmoji: { fontSize: 26 },
   cardInfo: { flex: 1 },
   cardNome: { fontSize: 16, fontWeight: '700', color: COLORS.textDark },
   cardONG: { fontSize: 13, color: COLORS.textMedium, marginTop: 2 },

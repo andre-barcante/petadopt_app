@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ONGPropostasStackParamList } from '../../navigation/types';
 import { COLORS } from '../../constants/colors';
@@ -23,13 +23,18 @@ const STATUS_COLORS: Record<StatusProposta, { bg: string; text: string }> = {
   recusada: { bg: COLORS.errorLight, text: COLORS.error },
 };
 
-function PropostaCard({ proposta, petNome, petEspecie, adotanteNome, onPress }: {
-  proposta: Proposta; petNome: string; petEspecie: 'cao' | 'gato'; adotanteNome: string; onPress: () => void;
+function PropostaCard({ proposta, petNome, petEspecie, petFotoUrl, adotanteNome, onPress }: {
+  proposta: Proposta; petNome: string; petEspecie: 'cao' | 'gato'; petFotoUrl?: string; adotanteNome: string; onPress: () => void;
 }) {
   const cor = STATUS_COLORS[proposta.status];
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      <Text style={styles.cardEmoji}>{especieEmoji(petEspecie)}</Text>
+      <View style={[styles.cardThumb, { backgroundColor: petEspecie === 'cao' ? '#FFF3E0' : '#E8F5E9' }]}>
+        {petFotoUrl
+          ? <Image source={{ uri: petFotoUrl }} style={styles.cardThumbPhoto} />
+          : <Text style={styles.cardEmoji}>{especieEmoji(petEspecie)}</Text>
+        }
+      </View>
       <View style={styles.cardInfo}>
         <Text style={styles.cardPet}>{petNome}</Text>
         <Text style={styles.cardAdotante}>👤 {adotanteNome}</Text>
@@ -82,6 +87,7 @@ export default function PropostasScreen({ navigation }: Props) {
                 proposta={item}
                 petNome={pet?.nome ?? 'Pet removido'}
                 petEspecie={pet?.especie ?? 'cao'}
+                petFotoUrl={pet?.fotoUrl}
                 adotanteNome={adotante?.nome ?? 'Usuário removido'}
                 onPress={() => navigation.navigate('PropostaDetail', { propostaId: item.id })}
               />
@@ -110,7 +116,9 @@ const styles = StyleSheet.create({
   filtroTextAtivo: { color: COLORS.white, fontWeight: '700' },
   list: { padding: 16, paddingTop: 8, paddingBottom: 32 },
   card: { backgroundColor: COLORS.white, borderRadius: 14, padding: 16, marginBottom: 12, flexDirection: 'row', alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.08, shadowRadius: 4 },
-  cardEmoji: { fontSize: 28, marginRight: 14 },
+  cardThumb: { width: 50, height: 50, borderRadius: 10, alignItems: 'center', justifyContent: 'center', marginRight: 14, overflow: 'hidden' },
+  cardThumbPhoto: { width: 50, height: 50, resizeMode: 'cover' },
+  cardEmoji: { fontSize: 26 },
   cardInfo: { flex: 1 },
   cardPet: { fontSize: 16, fontWeight: '700', color: COLORS.textDark },
   cardAdotante: { fontSize: 13, color: COLORS.textMedium, marginTop: 2 },
