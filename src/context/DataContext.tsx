@@ -158,6 +158,15 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     setPropostas((prev: Proposta[]) =>
       prev.map((p: Proposta) => p.id === propostaId ? { ...p, status } : p)
     );
+    if (status === 'aceita') {
+      const proposta = propostas.find((p: Proposta) => p.id === propostaId);
+      if (proposta) {
+        await supabase.from('pets').update({ disponivel: false }).eq('id', proposta.petId);
+        setPets((prev: Pet[]) =>
+          prev.map((p: Pet) => p.id === proposta.petId ? { ...p, disponivel: false } : p)
+        );
+      }
+    }
   };
 
   return (
