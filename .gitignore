@@ -7,6 +7,7 @@ infrastructure/terraform.tfvars
 
 # Scripts com credenciais reais (use setup_remote.example.sh como referência)
 infrastructure/terraform/setup_remote.sh
+infrastructure/terraform/apply.bat
 
 # Ambiente
 .env
